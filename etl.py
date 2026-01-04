@@ -1,6 +1,5 @@
 import pandas as pd 
 import requests
-import sqlalchemy 
 import os
 
 def extract_data(url):
