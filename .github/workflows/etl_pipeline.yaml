@@ -14,6 +14,20 @@ jobs:
   etl_pipeline:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: Has1234#
+          MYSQL_DATABASE: test_db
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -28,8 +42,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {30..0}; do
+            mysqladmin ping -h 127.0.0.1 -P 3306 -u root -pHas1234# &> /dev/null && break
+            echo 'Waiting for MySQL...'
+            sleep 1
+          done
+
       - name: Run ETL Pipeline
         env:
-         _API_NINJA_KEY_: ${{ secrets._API_NINJA_KEY_ }}
+          _API_NINJA_KEY_: ${{ secrets._API_NINJA_KEY_ }}
+          DB_URL: mysql+pymysql://root:Has1234#@127.0.0.1:3306/test_db
         run: |
           python etl.py
