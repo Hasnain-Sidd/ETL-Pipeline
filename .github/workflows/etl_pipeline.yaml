@@ -10,7 +10,7 @@ on:
 
 jobs:
   etl_pipeline:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     # This starts a MySQL database inside the GitHub Runner
     services:
