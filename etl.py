@@ -24,11 +24,11 @@ def transform_data(data):
      aqi_df=pd.DataFrame(dict(zip(title,values)),index=[0])
      return aqi_df.to_dict()
 
-def load_data(data_dict,db_connection):
+def load_data(data_dict,file_path):
      df=pd.DataFrame(data_dict)
-     engine=sqlalchemy.create_engine(db_connection)
-     df.to_sql('api_data',engine,if_exists='append',index=False)
+     
+     df.to_csv(file_path,index=False)
 
 extract=extract_data('https://api.api-ninjas.com/v1/airquality')
 transformed=transform_data(extract)
-load_data(transformed,"mysql+pymysql://root:Has1234#@localhost/test_db/aqi_data")
+load_data(transformed,"Aqi.csv")
