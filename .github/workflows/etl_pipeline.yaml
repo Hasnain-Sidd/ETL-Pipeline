@@ -4,19 +4,28 @@ on:
   push:
     branches:
       - main
-
   schedule:
     - cron: "0 * * * *"
-
   workflow_dispatch:
 
 jobs:
   etl_pipeline:
     runs-on: ubuntu-latest
 
+    # This starts a MySQL database inside the GitHub Runner
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: Has1234#
+          MYSQL_DATABASE: test_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -26,10 +35,13 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          # Ensure pymysql and cryptography are in your requirements.txt
+          pip install pandas requests sqlalchemy pymysql cryptography
 
       - name: Run ETL Pipeline
         env:
-         _API_NINJA_KEY_: ${{ secrets._API_NINJA_KEY_ }}
+          _API_NINJA_KEY_: ${{ secrets._API_NINJA_KEY_ }}
+          # We pass the connection string as an environment variable
+          DATABASE_URL: "mysql+pymysql://root:Has1234#@127.0.0.1:3306/test_db"
         run: |
           python etl.py

@@ -30,6 +30,8 @@ def load_data(data_dict,db_connection):
      with engine.connect() as connection:
          df.to_sql("aqi_data",if_exists='append',con=connection,index=False)
 
+
+db_connection = os.getenv('DATABASE_URL')
 extract=extract_data('https://api.api-ninjas.com/v1/airquality')
 transformed=transform_data(extract)
-load_data(transformed,"mysql+pymysql://root:Has1234#@host.docker.internal:3306/test_db")
+load_data(transformed,db_connection)
