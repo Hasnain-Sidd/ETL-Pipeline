@@ -1,38 +1,31 @@
-name: Karachi AQI ETL Pipeline
+name: AQI ETL Pipeline
 
 on:
-  push:
-    branches:
-      - main
   schedule:
-    - cron: "0 * * * *"
-  workflow_dispatch:
+    - cron: "0 * * * *"   # Every 6 hours
+  push:
+    branches: [ main ]
 
 jobs:
-  etl_pipeline:
+  etl:
     runs-on: ubuntu-latest
 
-    # This starts a MySQL database inside the GitHub Runner
-    services:
-      
-     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: "3.10"
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          # Ensure pymysql and cryptography are in your requirements.txt
-          pip install pandas requests sqlalchemy pymysql cryptography
+          pip install -r requirements.txt
 
-      - name: Run ETL Pipeline
+      - name: Run ETL
         env:
-          _API_NINJA_KEY_: ${{ secrets._API_NINJA_KEY_ }}
-          # We pass the connection string as an environment variable
+          _API_NINJA_KEY: ${{ secrets._API_NINJA_KEY }}
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
         run: |
-          python etl.py
+          python etl_pipeline.py
