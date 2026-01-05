@@ -19,7 +19,7 @@ def transform_data(data):
      Pm2_5=data['PM2.5']['concentration']
      So2=data['SO2']['concentration']
      Aqi=data['overall_aqi']
-     title=['CO','No2','O3','Pm10','Pm2.5','So2','Aqi']
+     title=['CO','No2','O3','Pm10','Pm2_5','So2','Aqi']
      values=[CO,No2,O3,Pm10,Pm2_5,So2,Aqi]
      aqi_df=pd.DataFrame(dict(zip(title,values)),index=[0])
      return aqi_df.to_dict()
