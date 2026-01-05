@@ -10,20 +10,12 @@ on:
 
 jobs:
   etl_pipeline:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     # This starts a MySQL database inside the GitHub Runner
     services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: Has1234#
-          MYSQL_DATABASE: test_db
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
-    steps:
+      
+     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -42,6 +34,5 @@ jobs:
         env:
           _API_NINJA_KEY_: ${{ secrets._API_NINJA_KEY_ }}
           # We pass the connection string as an environment variable
-          DATABASE_URL: "mysql+pymysql://root:Has1234#@127.0.0.1:3306/test_db"
         run: |
           python etl.py
