@@ -37,5 +37,6 @@ jobs:
       - name: Run ETL
         env:
           _API_NINJA_KEY_: ${{ secrets._API_NINJA_KEY_ }}
+          MONGO_HOST: mongo
         run: |
           python etl.py
