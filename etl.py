@@ -26,8 +26,8 @@ def transform_data(data):
      return aqi_df.to_dict(orient="records")[0]
 
 def load_data(data_dict):
-     mongo_host = os.getenv("MONGO_HOST", "localhost")
-     client = MongoClient(f"mongodb://{mongo_host}:27017/")
+     mongo_uri=os.getenv("MONGO_URI")
+     client = MongoClient(mongo_uri)
      db=client['aqi_data']
      collection=db['karachi_aqi_etl']
      collection.insert_one(data_dict)
