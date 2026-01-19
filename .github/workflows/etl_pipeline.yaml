@@ -26,7 +26,7 @@ jobs:
 
       - name: Run ETL Pipeline
         env:
-          API_NINJA_KEY: ${{ secrets.API_NINJA_KEY }}
+          _API_NINJA_KEY_: ${{ secrets._API_NINJA_KEY_ }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
         run: |
           python etl.py
